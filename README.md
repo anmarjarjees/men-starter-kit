@@ -130,7 +130,7 @@ npm install dotenv
 ```
 
 b- Create the .env File: In your project root, create a .env file and add your MongoDB connection string:
-and copy the connection string:
+You can copy the connection string:
 ```
 MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority
 ```

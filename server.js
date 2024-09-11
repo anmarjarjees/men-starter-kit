@@ -1,6 +1,32 @@
-// Load environment variables from .env file
+
+// STEP#1: Module Imports:
+// 1) Import the express module to set up a web server
+
+// CommonJS:
+// const express = require('express');
+
+// ES Module:
+import express from 'express';
+
+// 2) Import the mongoose module for working with MongoDB
+// CommonJS:
+// const mongoose = require('mongoose');
+
+// ES Module:
+import mongoose from 'mongoose';
+
+
+// 3) Import "dotenv" for environment variables
 // dotenv is used to load environment variables from the .env file into process.env
-require('dotenv').config();
+
+// CommonJS:
+// require('dotenv').config();
+
+// ES Module:
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 /*
 The .config() function reads the .env file 
 and makes its key-value pairs available in process.env
@@ -9,12 +35,18 @@ Without calling .config(), the variables from the .env file would
 not be accessible in our code
 */
 
-// Import the express module to set up a web server
-const express = require('express');
+/* 
+Important Note To Review:
+*************************
+don't forget that using "import":
+will cause => SyntaxError: Cannot use import statement outside a module
 
-// Import the mongoose module for working with MongoDB
-const mongoose = require('mongoose');
+Solution: modify the "package.json" file:
+> "type":"module"
+> Default value => "type": "commonjs",
+*/
 
+// STEP#2: Express Application Setup:
 // Create an instance of an Express application
 const app = express();
 
@@ -34,39 +66,80 @@ const mongoURI = process.env.MONGO_URI;
 /*
 mongoose: Use mongoose to connect to MongoDB using the connection string
 mongoose.connect() connects the app to the MongoDB database using the provided URI (mongoURI)
-Options: 
- -useNewUrlParser 
- - useUnifiedTopology 
-are both recommended for modern MongoDB connections
 
-The options { useNewUrlParser: true, useUnifiedTopology: true } ensure the latest 
-
-Connection behaviors are used, making the connection more stable and compatible with modern MongoDB.
+Link: https://mongoosejs.com/docs/index.html
 */
-mongoose.connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+
+// MongoDB connection using async/await based on Mongoose documentation
+/* 
+To review:
+async is used to define an "Asynchronous Function" 
+Asynchronous Function: 
+- is used to handle tasks that take time (like connecting to a database) 
+without stopping the rest of the program from running.
+- always returns a "promise"
+- is using "await" inside, async/await simplifies working with promises in a sequential way
+*/
+
+// STEP#3: MongoDB Connection:
+async function main() {
+    /* 
+    To review:
+    "await" => pauses the function until the connection to MongoDB is successful.
+    so the code pauses at that point until the promise resolves
+
+    if the promise is rejected (for any error that might occur), 
+    the error is thrown and can be caught using .catch() when you call the async function.
+    */
+    await mongoose.connect(mongoURI);
+    /* 
+    mongoose.connect() is used to connect to the MongoDB database. 
+    It takes a connection string (process.env.MONGO_URI), 
+    which is stored in a .env file for security.
+
+    Notice that:
+    > it either successfully connects and logs the message "Connected to MongoDB Atlas"
+    > or it catches errors with .catch()
+    */
+    console.log('Connected to MongoDB Atlas');
+}
+
+// Connect to the MongoDB database and handle any errors
+main().catch(err => console.log('MongoDB connection error:', err));
+/* 
+To summarize:
+> The main() function is async, meaning it returns a promise.
+> If there's an error in the await mongoose.connect(), the promise is rejected.
+> The .catch() attached to main() will handle the error, logging it with console.log(err).
+*/
+
+// STEP#4: Routes
+// Root Route ('/'): Define a route for the root URL
+app.get('/', (req, res) => {
+    res.send('Hello, world!');
 });
+
+
+/* 
+Alternative Connection Solution:
+********************************
+*/
 
 /*
-Event listener to log when the MongoDB connection is successful
-mongoose.connection.on('connected') is an event listener that runs 
-when the connection to MongoDB is successful.
-It logs a message to the console confirming the connection to MongoDB Atlas.
-*/
-mongoose.connection.on('connected', () => {
-    console.log('Connected to MongoDB Atlas');
-});
+async function connectToDB() {
+    try {
+        await mongoose.connect(mongoURI);
+        console.log('Connected to MongoDB Atlas');
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
+    }
+}
 
-/*  
-Event listener to log any connection errors
-mongoose.connection.on('error') listens for any connection errors.
-If an error occurs during the connection, it logs the error message to the console.
+// Connect to the MongoDB database
+connectToDB();
 */
-mongoose.connection.on('error', (err) => {
-    console.log('MongoDB connection error:', err);
-});
 
+// STEP#5: Starting the Server (Server Initialization)
 // Define a route for the root URL ('/') that sends a "Hello, world!" response
 app.get('/', (req, res) => {
     res.send('Hello, world!');
