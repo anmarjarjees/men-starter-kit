@@ -113,13 +113,6 @@ To summarize:
 > The .catch() attached to main() will handle the error, logging it with console.log(err).
 */
 
-// STEP#4: Routes
-// Root Route ('/'): Define a route for the root URL
-app.get('/', (req, res) => {
-    res.send('Hello, world!');
-});
-
-
 /* 
 Alternative Connection Solution:
 ********************************
@@ -139,12 +132,13 @@ async function connectToDB() {
 connectToDB();
 */
 
-// STEP#5: Starting the Server (Server Initialization)
-// Define a route for the root URL ('/') that sends a "Hello, world!" response
+// STEP#4: Routes
+// Root Route ('/'): Define a route for the root URL
 app.get('/', (req, res) => {
     res.send('Hello, world!');
 });
 
+// STEP#5: Starting the Server (Server Initialization)
 // Start the Express server, listening on the specified port (3000)
 // Logs a message when the server is running
 app.listen(port, () => {
