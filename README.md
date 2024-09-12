@@ -88,38 +88,13 @@ We need to set up MongoDB to store and manage data
 npm install mongoose
 ```
 3. Connect Your Express Server to MongoDB: Modify **server.js** file to include MongoDB connection logic. 
-Add the following code to connect to MongoDB using Mongoose:
-
+Add the following code to connect to MongoDB using Mongoose (review the full code in t he server.js file):
 ```js
-const mongoose = require('mongoose');
+// CommonJS:
+// const mongoose = require('mongoose');
 
-/*
-Option#1: local MongoDB database
-Replace with your MongoDB connection string 
-*/
-// const mongoURI = 'mongodb://localhost:27017/mydatabase';
-
-/*
-Option#2: cloud MongoDB database
-Replace with your MongoDB Atlas connection string
-*/
-// const mongoURI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority';
-
-// Better Solution calling the process.env variables:
-const mongoURI = process.env.MONGO_URI;
-
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
-mongoose.connection.on('connected', () => {
-  console.log('Connected to MongoDB');
-});
-
-mongoose.connection.on('error', (err) => {
-  console.log('MongoDB connection error:', err);
-});
+// ES Module:
+import mongoose from 'mongoose';
 ```
 
 4. Use Environment Variables for Better Security: Store sensitive information, such as database credentials, in environment variables.
@@ -160,30 +135,18 @@ node server.js
 - Check the terminal for the "Connected to MongoDB" message to confirm that the connection is successful.
 
 # References, Resources, and Credits:
-1. Node.js Official Documentation
+1. [Node.js Official Documentation](https://nodejs.org/en/docs/)
 
-    https://nodejs.org/en/docs/
-
-2. Express.js Official Documentation
-
-    https://expressjs.com/
+2. [Express.js Official Documentation](https://expressjs.com/)
     
-3. MongoDB Atlas Documentation
+3. [MongoDB Atlas Documentation](https://docs.atlas.mongodb.com/)
 
-    https://docs.atlas.mongodb.com/
+4. [Mongoose Documentation](https://mongoosejs.com/docs/guide.html)
 
-4. Mongoose Documentation
+5. [dotenv Package Documentation](https://github.com/motdotla/dotenv)
 
-    https://mongoosejs.com/docs/guide.html
+6. [My Repo "Express Basics"](https://github.com/anmarjarjees/express-basics)
 
-5. dotenv Package Documentation
-
-    https://github.com/motdotla/dotenv
-
-6. My Repo "Express Basics"
-
-    https://github.com/anmarjarjees/express-basics
-
-7. My Repo "Express Node Website"
-
-    https://github.com/anmarjarjees/express-node-website
+7. [My Repo "Express Node Website"](https://github.com/anmarjarjees/express-node-website)
+  
+8. [Jesse Hall - Senior Developer Advocate-Texas](https://www.mongodb.com/developer/author/jesse-hall/)

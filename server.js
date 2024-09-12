@@ -1,3 +1,9 @@
+/* 
+CommonJS vs. ES Modules:
+If you use import statements, 
+remember to set "type": "module" in your package.json. 
+This is crucial for Node.js to recognize ES module syntax.
+*/
 
 // STEP#1: Module Imports:
 // 1) Import the express module to set up a web server
@@ -14,7 +20,6 @@ import express from 'express';
 
 // ES Module:
 import mongoose from 'mongoose';
-
 
 // 3) Import "dotenv" for environment variables
 // dotenv is used to load environment variables from the .env file into process.env
@@ -33,6 +38,8 @@ and makes its key-value pairs available in process.env
 
 Without calling .config(), the variables from the .env file would 
 not be accessible in our code
+
+Ensure that your .env file is properly placed in the root of your project
 */
 
 /* 
@@ -53,7 +60,9 @@ const app = express();
 // Define the port number where the server will listen for requests
 const port = 3000;
 
-// MongoDB connection string:
+/* 
+MongoDB connection string: Local vs. Cloud
+*/
 // MongoDB connection string (local MongoDB database example, if used locally)
 // const mongoURI = 'mongodb://localhost:3000/mydatabase'; 
 
@@ -62,6 +71,20 @@ const port = 3000;
 
 // A better practice: using an environment variable for the MongoDB connection string from the .env file
 const mongoURI = process.env.MONGO_URI;
+
+// Additional step to ensure that "MONGO_URI" is set:
+if (!mongoURI) {
+    console.error('MONGO_URI is not defined in .env file');
+    process.exit(1); // Exit the process with an error code
+    /* 
+    process.exit([code]): 
+    - This method terminates the process with the specified exit code
+    - If not code specified, it will exit with code 0 indicating success
+    - An exit code other than 0 usually indicates an error or abnormal termination
+
+    Link: https://nodejs.org/api/process.html#processexitcode
+    */
+}
 
 /*
 mongoose: Use mongoose to connect to MongoDB using the connection string
@@ -73,7 +96,8 @@ Link: https://mongoosejs.com/docs/index.html
 // MongoDB connection using async/await based on Mongoose documentation
 /* 
 To review:
-async is used to define an "Asynchronous Function" 
+Async/Await => is syntactic sugar over Promises
+"async" is used to define an "Asynchronous Function" 
 Asynchronous Function: 
 - is used to handle tasks that take time (like connecting to a database) 
 without stopping the rest of the program from running.
@@ -138,7 +162,65 @@ app.get('/', (req, res) => {
     res.send('Hello, world!');
 });
 
-// STEP#5: Starting the Server (Server Initialization)
+// STEP#5: (Additional and Optional STEP):
+/* 
+ To review:
+ In Express.js, "middleware functions" can be categorized 
+ into 2 categories:
+ - General Middleware Functions
+ - Error-Handling Middleware Functions
+
+ These middleware functions have:
+ ********************************
+ - different signatures based on their intended use
+ - different arguments:
+    > general middleware functions:
+    *******************************
+    1- req: The request object, 
+    which contains details about the HTTP request, such as headers,
+    query parameters, and the request body
+    2- res: The response object, 
+    which is used to send responses to the client.
+    3- next: A function that, when called, 
+    passes control to the next middleware function in the stack. 
+    If not called, the request will hang and not proceed to the next middleware or route handler.
+    > error-handling middleware functions:
+    **************************************
+    1- err: The error object passed from the previous middleware
+    or route handler. 
+    This object typically contains information about the error, 
+    such as the message and stack trace.
+    2- req: The request object.
+    3- res: The response object.
+    4- next: The next function in the middleware stack. 
+    This is often not used in error-handling middleware, but it's included to maintain the function signature.
+
+ Define "error-handling middleware function"
+ - It's the same as other Express middleware functions, but:
+    > other middleware functions accept 3 arguments
+    > error-handling middleware functions accept 4 arguments:
+    - err: The error object that was passed to the middleware.
+    - req: The request object. (not used in this case)
+    - res: The response object.
+    - next: The next middleware function in the stack (not used in this case).
+
+ Link: https://expressjs.com/en/guide/error-handling.html
+*/
+app.use((err, req, res, next) => {
+    /* 
+     logs the error stack trace to the console
+     it helps with debugging by providing detailed information about where the error occurred:
+    */
+    console.error(err.stack);
+    /* 
+     sends a response to the client with an HTTP status code of 500
+     500 = Internal Server Error
+     with a message indicating that something went wrong.
+    */
+    res.status(500).send('Something broke!');
+});
+
+// STEP#6: Starting the Server (Server Initialization)
 // Start the Express server, listening on the specified port (3000)
 // Logs a message when the server is running
 app.listen(port, () => {
