@@ -8,7 +8,14 @@ This repository outlines the initial setup and essential boilerplate for buildin
 - **Environment Variables:** Securely manages sensitive information such as database credentials.
 - **Basic Server Setup:** Configures the server to listen for and respond to incoming requests..
 
-## Step#0: Initiating the 'package.json' file (Optional)
+After completing all the required steps as we covered in my repo "MEN-Starter-Kit" which includes:
+- Create MongoDB Collections (Atlas Cloud)
+- Adding Express Server file "server.js" with the default settings
+- Defining Mongoose Schemas and Models
+- Preparing Environment Variables
+- Run and test Server Setup
+
+### Step#1: Initiating the 'package.json' file
 Navigate to your project folder, then use the "npm init" command to create a "package.json" file for your application. 
 - With options:
 ```
@@ -19,14 +26,31 @@ npm init
 npm init -y
 ```
 
-## Step#1: Set Up Express
+### Step#2: Set Up Express
 1. **Install Express**:
    To get started with Express, install it by running the following command:
 ```
    npm install express
 ```
 
-2. **Create the server.js File**:
+### Step#3: Installing the "dotenv":
+Use Environment Variables for Better Security: Store sensitive information, such as database credentials, in environment variables:
+```
+npm install dotenv
+```
+
+### Step#4: Installing mongoose
+```
+npm install mongoose
+```
+
+### Step#5: Creating the server JavaScript file:
+By conventions:
+- server.js
+- app.js
+- index.js
+
+By using any from the following methods:
 - Unix-Based Systems (Mac OS and Linux):
 ```
 touch server.js
@@ -41,70 +65,17 @@ echo > server.js
 ```
 New-Item -Path . -Name "server.js" -ItemType "file"
 ```
-
 - File Explorer: Alternatively, you can manually create the file through the graphical interface of Windows.
 
-3. **Add Express Boilerplate Code to server.js**: 
-Add the basic Express setup code to server.js to create a simple Express server. For example:
-
-```js
-const express = require('express');
-const app = express();
-const port = 3000;
-
-app.get('/', (req, res) => {
-  res.send('Hello, world!');
-});
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
-});
-```
-
-### Summary of File Creation Methods:
-- **touch** Command: Used in Unix-based systems to create an empty file. 
-Example command: 
-```
-touch filename
-```
-- echo > filename: Used in Windows Command Prompt to create a new file. Example: 
-```
-echo > server.js
-```
-- New-Item Command: Used in Windows PowerShell to create a file. Example: 
-```
-New-Item -Path . -Name "server.js" -ItemType "file"
-```
-- File Explorer: Manually creating a file through the graphical interface of Windows.
-
-## Step#2: Set Up MongoDB
+### Step#6: Set Up MongoDB
 We need to set up MongoDB to store and manage data
 1. Install MongoDB
     - *Local Installation*: Download and install MongoDB from the [official MongoDB website](https://www.mongodb.com/try/download/community). Please refer to my lecture PDF files for more details. You can also follow the installation instructions specific to your operating system as explained in MongoDB website.
     - *Cloud Installation*: Use [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database), a cloud-based MongoDB service. This is a convenient option if you prefer not to install MongoDB locally. Also refer to my PDF files for more details.
 
-2. Install Mongoose: Install Mongoose: Mongoose is an Object Data Modeling (ODM) library that helps you interact with MongoDB using a more structured approach.
-```
-npm install mongoose
-```
-3. Connect Your Express Server to MongoDB: Modify **server.js** file to include MongoDB connection logic. 
-Add the following code to connect to MongoDB using Mongoose (review the full code in t he server.js file):
-```js
-// CommonJS:
-// const mongoose = require('mongoose');
 
-// ES Module:
-import mongoose from 'mongoose';
-```
-
-4. Use Environment Variables for Better Security: Store sensitive information, such as database credentials, in environment variables.
-
-a- Install dotenv:
-```
-npm install dotenv
-```
-
-b- Create the .env File: In your project root, create a .env file and add your MongoDB connection string:
+### Step#7: Create the .env File:
+In your project root, create a .env file and add your MongoDB connection string:
 You can copy the connection string:
 ```
 MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority
@@ -113,7 +84,7 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retr
 - Replace <password> with the corresponding password.
 - Replace <dbname> with the name of your database.
 
-c- Load Environment Variables: Add the following line at the top of your server.js file to load the environment variables from the .env file:
+**Load Environment Variables:** Add the following line at the top of your server.js file to load the environment variables from the .env file:
 ```js
 require('dotenv').config();
 ```
@@ -133,6 +104,57 @@ require('dotenv').config();
 node server.js
 ```
 - Check the terminal for the "Connected to MongoDB" message to confirm that the connection is successful.
+
+
+# Project Files Sequence:
+### File1: dbconnect.js - MongoDB Connection File
+This file is primarily responsible for establishing the connection to the MongoDB database using Mongoose.
+
+### File2: create.js - Simple create without Express
+
+### File3: index.js - MongoDB Connection with Full Express Template
+This file is primarily responsible for establishing the connection to the MongoDB database using Mongoose.
+
+- Adding the Express Template contents
+- Adding the Environment Variable file with the required code for .env and in the server file
+- Adding the initial code for "mongoose" besides Express template and .ENV variable as shown below:
+
+**NOTES:**
+
+- we can install all in one command:
+```
+npm install mongoose dotenv express
+```
+
+- we should also install ["nodemon"](https://www.npmjs.com/package/nodemon) as a development dependency:
+```
+npm install --save-dev nodemon
+```
+
+Then modify the "script" option in the package.json file:
+```
+"scripts": {
+    "dev": "nodemon index.js"
+}
+```
+
+**We can now proceed with CRUD operations**
+
+# Our Atlas MongoDB:
+- database: abc-college
+- collection: "employees"
+- one document sample:
+```
+{
+  "_id": "6685c1acc3ce6380ffdd0004",
+  "employee_id": "emp123",
+  "name": "Alex Chow",
+  "email": "alex@college.com",
+  "position": "Instructor",
+  "age": 58,
+  "date_hired": "2024-07-03"
+}
+```
 
 # References, Resources, and Credits:
 1. [Node.js Official Documentation](https://nodejs.org/en/docs/)

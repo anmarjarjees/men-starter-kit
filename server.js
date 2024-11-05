@@ -1,51 +1,13 @@
 /* 
+Important Note To Review:
+*************************
+
 CommonJS vs. ES Modules:
 If you use import statements, 
 remember to set "type": "module" in your package.json. 
 This is crucial for Node.js to recognize ES module syntax.
-*/
 
-// STEP#1: Module Imports:
-// 1) Import the express module to set up a web server
-
-// CommonJS:
-// const express = require('express');
-
-// ES Module:
-import express from 'express';
-
-// 2) Import the mongoose module for working with MongoDB
-// CommonJS:
-// const mongoose = require('mongoose');
-
-// ES Module:
-import mongoose from 'mongoose';
-
-// 3) Import "dotenv" for environment variables
-// dotenv is used to load environment variables from the .env file into process.env
-
-// CommonJS:
-// require('dotenv').config();
-
-// ES Module:
-import dotenv from 'dotenv';
-
-// Load environment variables from .env file
-dotenv.config();
-/*
-The .config() function reads the .env file 
-and makes its key-value pairs available in process.env
-
-Without calling .config(), the variables from the .env file would 
-not be accessible in our code
-
-Ensure that your .env file is properly placed in the root of your project
-*/
-
-/* 
-Important Note To Review:
-*************************
-don't forget that using "import":
+Don't forget that using "import":
 will cause => SyntaxError: Cannot use import statement outside a module
 
 Solution: modify the "package.json" file:
@@ -53,29 +15,64 @@ Solution: modify the "package.json" file:
 > Default value => "type": "commonjs",
 */
 
-// STEP#2: Express Application Setup:
+// STEP#1: Module Imports:
+// 1) Import the express module to set up a web server
+import express from 'express';
+
+// 2) Import the mongoose module for working with MongoDB
+import mongoose from 'mongoose';
+/* 
+CommonJS:
+const mongoose = require('mongoose');
+*/
+
+// 3) Import "dotenv" for environment variables
+import dotenv from 'dotenv';
+
+// STEP 2: Load environment variables from .env file
+dotenv.config();
+/*
+The .config() function reads the .env file 
+and makes its key-value pairs available in process.env
+
+Without calling .config(), 
+the variables from the .env file would not be accessible in our code
+
+Ensure that your .env file is properly placed in the root of your project
+*/
+
+// STEP#3: Express Application Setup:
 // Create an instance of an Express application
+// Initialize Express App
 const app = express();
 
 // Define the port number where the server will listen for requests
-const port = 3000;
+const port = process.env.PORT || 3000;
+/* 
+ if an environment variable PORT exists (in a production environment),
+ it will be used, and if not, the app will default to port 3000
+*/
 
 /* 
 MongoDB connection string: Local vs. Cloud
-*/
-// MongoDB connection string (local MongoDB database example, if used locally)
-// const mongoURI = 'mongodb://localhost:3000/mydatabase'; 
+******************************************
 
-// MongoDB Atlas connection string (example for cloud-based MongoDB)
-// const mongoURI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority';
+MongoDB connection string (local MongoDB database example, if used locally):
+> const mongoURI = 'mongodb://localhost:3000/mydatabase'; 
+
+MongoDB Atlas connection string (example for cloud-based MongoDB)
+> const mongoURI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority';
+*/
+
 
 // A better practice: using an environment variable for the MongoDB connection string from the .env file
+// Retrieve MongoDB URI from environment variables
 const mongoURI = process.env.MONGO_URI;
 
-// Additional step to ensure that "MONGO_URI" is set:
+// Check if MongoDB URI exists in environment variables
 if (!mongoURI) {
-    console.error('MONGO_URI is not defined in .env file');
-    process.exit(1); // Exit the process with an error code
+    console.error('MONGO_URI is not defined in environment variables.');
+    process.exit(1); // Exit the process if the MONGO_URI is missing
     /* 
     process.exit([code]): 
     - This method terminates the process with the specified exit code
@@ -85,13 +82,6 @@ if (!mongoURI) {
     Link: https://nodejs.org/api/process.html#processexitcode
     */
 }
-
-/*
-mongoose: Use mongoose to connect to MongoDB using the connection string
-mongoose.connect() connects the app to the MongoDB database using the provided URI (mongoURI)
-
-Link: https://mongoosejs.com/docs/index.html
-*/
 
 // MongoDB connection using async/await based on Mongoose documentation
 /* 
@@ -105,29 +95,47 @@ without stopping the rest of the program from running.
 - is using "await" inside, async/await simplifies working with promises in a sequential way
 */
 
-// STEP#3: MongoDB Connection:
+// STEP#4: MongoDB Connection:
+// MongoDB connection using async/await based on Mongoose documentation
 async function main() {
-    /* 
-    To review:
-    "await" => pauses the function until the connection to MongoDB is successful.
-    so the code pauses at that point until the promise resolves
+    try {
+        /* 
+        To review:
+        "await" => pauses the function until the connection to MongoDB is successful.
+        so the code pauses at that point until the promise resolves
 
-    if the promise is rejected (for any error that might occur), 
-    the error is thrown and can be caught using .catch() when you call the async function.
-    */
-    await mongoose.connect(mongoURI);
-    /* 
-    mongoose.connect() is used to connect to the MongoDB database. 
-    It takes a connection string (process.env.MONGO_URI), 
-    which is stored in a .env file for security.
+        if the promise is rejected (for any error that might occur), 
+        the error is thrown and can be caught using .catch() when you call the async function.
+        */
+        /*
+        mongoose: Use mongoose to connect to MongoDB using the connection string
+        mongoose.connect() connects the app to the MongoDB database using the provided URI (mongoURI)
 
-    Notice that:
-    > it either successfully connects and logs the message "Connected to MongoDB Atlas"
-    > or it catches errors with .catch()
-    */
-    console.log('Connected to MongoDB Atlas');
+            mongoose.connect() is used to connect to the MongoDB database. 
+            It takes a connection string (process.env.MONGO_URI) [Required Argument], 
+            which is stored in a .env file for security.
+
+            Notice that:
+            > it either successfully connects and logs the message "Connected to MongoDB Atlas"
+            > or it catches errors with .catch()
+            Link: https://mongoosejs.com/docs/index.html
+        */
+        await mongoose.connect(mongoURI, {
+            // Ensures that the URL string parser uses the latest MongoDB version
+            // Use new URL string parser
+            useNewUrlParser: true,
+            // Avoids deprecation warnings related to MongoDB driver
+            // Avoid deprecation warnings
+            useUnifiedTopology: true,
+        });
+        console.log('Connected to MongoDB Atlas');
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
+        process.exit(1); // Exit the process if the connection fails
+    }
 }
 
+// Connect to the MongoDB database:
 // Connect to the MongoDB database and handle any errors
 main().catch(err => console.log('MongoDB connection error:', err));
 /* 
@@ -137,7 +145,7 @@ To summarize:
 > The .catch() attached to main() will handle the error, logging it with console.log(err).
 */
 
-/* 
+/*
 Alternative Connection Solution:
 ********************************
 */
@@ -151,18 +159,45 @@ async function connectToDB() {
         console.error('MongoDB connection error:', err);
     }
 }
-
-// Connect to the MongoDB database
+    // Connect to the MongoDB database
 connectToDB();
 */
 
-// STEP#4: Routes
+/* 
+To review: express.json() 
+- is middleware that parses incoming JSON in the request body.
+- is needed  when you are dealing with HTTP methods that send data in the request body, 
+such as POST, PUT, or PATCH
+*/
+// STEP#5: Middleware Setup (Handling JSON bodies)
+app.use(express.json()); // Parse incoming JSON payloads
+/* 
+NOTE:
+express.json() Middleware: 
+Is added to ensure that our app can properly handle requests 
+with "JSON" bodies as it's required to perform the express modifying methods:
+- create (post) 
+- update (put) 
+- delete (delete) 
+against the mongodb documents.
+
+Without express.json(), 
+Express cannot read the JSON data in req.body, 
+which would make it impossible to interact with MongoDB documents 
+based on the data the client is sending
+
+Notice that "GET" method typically doesn't have a request body,
+it retrieves data from the server and usually sends it back in the response.
+*/
+
+// STEP#6: Routes
 // Root Route ('/'): Define a route for the root URL
 app.get('/', (req, res) => {
-    res.send('Hello, world!');
+    res.send('MongoDB, Express, and Node.js are working!');
 });
 
-// STEP#5: (Additional and Optional STEP):
+
+// STEP#7: (Additional and Optional STEP):
 /* 
  To review:
  In Express.js, "middleware functions" can be categorized 
@@ -174,6 +209,7 @@ app.get('/', (req, res) => {
  ********************************
  - different signatures based on their intended use
  - different arguments:
+
     > general middleware functions:
     *******************************
     1- req: The request object, 
@@ -184,6 +220,7 @@ app.get('/', (req, res) => {
     3- next: A function that, when called, 
     passes control to the next middleware function in the stack. 
     If not called, the request will hang and not proceed to the next middleware or route handler.
+    
     > error-handling middleware functions:
     **************************************
     1- err: The error object passed from the previous middleware
@@ -220,9 +257,12 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-// STEP#6: Starting the Server (Server Initialization)
+// STEP#8: Starting the Server (Server Initialization)
 // Start the Express server, listening on the specified port (3000)
-// Logs a message when the server is running
 app.listen(port, () => {
+    // Log a message when the server is running
     console.log(`Server running at http://localhost:${port}/`);
+}).on('error', (err) => {
+    // Log server errors if any
+    console.error('Error starting server:', err);
 });
