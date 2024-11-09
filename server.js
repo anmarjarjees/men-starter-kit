@@ -1,20 +1,3 @@
-/* 
-Important Note To Review:
-*************************
-
-CommonJS vs. ES Modules:
-If you use import statements, 
-remember to set "type": "module" in your package.json. 
-This is crucial for Node.js to recognize ES module syntax.
-
-Don't forget that using "import":
-will cause => SyntaxError: Cannot use import statement outside a module
-
-Solution: modify the "package.json" file:
-> "type":"module"
-> Default value => "type": "commonjs",
-*/
-
 // STEP#1: Module Imports:
 // 1) Import the express module to set up a web server
 import express from 'express';
@@ -29,17 +12,8 @@ const mongoose = require('mongoose');
 // 3) Import "dotenv" for environment variables
 import dotenv from 'dotenv';
 
-// STEP 2: Load environment variables from .env file
+// STEP#2: Load environment variables from .env file
 dotenv.config();
-/*
-The .config() function reads the .env file 
-and makes its key-value pairs available in process.env
-
-Without calling .config(), 
-the variables from the .env file would not be accessible in our code
-
-Ensure that your .env file is properly placed in the root of your project
-*/
 
 // STEP#3: Express Application Setup:
 // Create an instance of an Express application
@@ -53,18 +27,6 @@ const port = process.env.PORT || 3000;
  it will be used, and if not, the app will default to port 3000
 */
 
-/* 
-MongoDB connection string: Local vs. Cloud
-******************************************
-
-MongoDB connection string (local MongoDB database example, if used locally):
-> const mongoURI = 'mongodb://localhost:3000/mydatabase'; 
-
-MongoDB Atlas connection string (example for cloud-based MongoDB)
-> const mongoURI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority';
-*/
-
-
 // A better practice: using an environment variable for the MongoDB connection string from the .env file
 // Retrieve MongoDB URI from environment variables
 const mongoURI = process.env.MONGO_URI;
@@ -73,14 +35,6 @@ const mongoURI = process.env.MONGO_URI;
 if (!mongoURI) {
     console.error('MONGO_URI is not defined in environment variables.');
     process.exit(1); // Exit the process if the MONGO_URI is missing
-    /* 
-    process.exit([code]): 
-    - This method terminates the process with the specified exit code
-    - If not code specified, it will exit with code 0 indicating success
-    - An exit code other than 0 usually indicates an error or abnormal termination
-
-    Link: https://nodejs.org/api/process.html#processexitcode
-    */
 }
 
 // MongoDB connection using async/await based on Mongoose documentation
@@ -99,27 +53,7 @@ without stopping the rest of the program from running.
 // MongoDB connection using async/await based on Mongoose documentation
 async function main() {
     try {
-        /* 
-        To review:
-        "await" => pauses the function until the connection to MongoDB is successful.
-        so the code pauses at that point until the promise resolves
 
-        if the promise is rejected (for any error that might occur), 
-        the error is thrown and can be caught using .catch() when you call the async function.
-        */
-        /*
-        mongoose: Use mongoose to connect to MongoDB using the connection string
-        mongoose.connect() connects the app to the MongoDB database using the provided URI (mongoURI)
-
-            mongoose.connect() is used to connect to the MongoDB database. 
-            It takes a connection string (process.env.MONGO_URI) [Required Argument], 
-            which is stored in a .env file for security.
-
-            Notice that:
-            > it either successfully connects and logs the message "Connected to MongoDB Atlas"
-            > or it catches errors with .catch()
-            Link: https://mongoosejs.com/docs/index.html
-        */
         await mongoose.connect(mongoURI, {
             // Ensures that the URL string parser uses the latest MongoDB version
             // Use new URL string parser

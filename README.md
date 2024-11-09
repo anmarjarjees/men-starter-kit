@@ -107,6 +107,7 @@ node server.js
 
 
 # Project Files Sequence:
+Please follow the following order when reading the code:
 ### File1: dbconnect.js - MongoDB Connection File
 This file is primarily responsible for establishing the connection to the MongoDB database using Mongoose.
 
@@ -167,8 +168,10 @@ Then modify the "script" option in the package.json file:
 
 5. [dotenv Package Documentation](https://github.com/motdotla/dotenv)
 
-6. [My Repo "Express Basics"](https://github.com/anmarjarjees/express-basics)
+6. [My Repo "Starting with Node"](https://github.com/anmarjarjees/node.js-start)
 
-7. [My Repo "Express Node Website"](https://github.com/anmarjarjees/express-node-website)
+7. [My Repo "Express Basics"](https://github.com/anmarjarjees/express-basics)
+
+8. [My Repo "Express Node Website"](https://github.com/anmarjarjees/express-node-website)
   
-8. [Jesse Hall - Senior Developer Advocate-Texas](https://www.mongodb.com/developer/author/jesse-hall/)
+9. [Jesse Hall - Senior Developer Advocate-Texas](https://www.mongodb.com/developer/author/jesse-hall/)
