@@ -53,7 +53,6 @@ without stopping the rest of the program from running.
 // MongoDB connection using async/await based on Mongoose documentation
 async function main() {
     try {
-
         await mongoose.connect(mongoURI, {
             // Ensures that the URL string parser uses the latest MongoDB version
             // Use new URL string parser

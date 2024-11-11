@@ -8,12 +8,24 @@ This repository outlines the initial setup and essential boilerplate for buildin
 - **Environment Variables:** Securely manages sensitive information such as database credentials.
 - **Basic Server Setup:** Configures the server to listen for and respond to incoming requests..
 
-After completing all the required steps as we covered in my repo "MEN-Starter-Kit" which includes:
-- Create MongoDB Collections (Atlas Cloud)
-- Adding Express Server file "server.js" with the default settings
+You need to prepare your MongoDB ATLAS 
+- Cluster Name
+- Create  Database/Collections (Atlas Cloud)
 - Defining Mongoose Schemas and Models
 - Preparing Environment Variables
 - Run and test Server Setup
+
+# MongoDB Atlas:
+1. Create a Cluster
+  - Go to the MongoDB Atlas website and sign in or create an account (if you don't have). Check my PDF files. 
+  - Create a new cluster if you haven't already. Follow the prompts to set up your cluster.
+2. Get the Connection String
+  - Go to the **Database Access**, create a user with read and write access to your database.
+  - Go to the **Network Access**, and add your IP address to the IP Whitelist to allow connections from your machine.
+  - In **Clusters**, click Connect and choose "Connect Your Application" to get the connection string.
+
+# Project Setup:
+This section covers the initial steps to install the required tools and prepare the project:
 
 ### Step#1: Initiating the 'package.json' file
 Navigate to your project folder, then use the "npm init" command to create a "package.json" file for your application. 
@@ -45,7 +57,7 @@ npm install mongoose
 ```
 
 ### Step#5: Creating the server JavaScript file:
-By conventions:
+By conventions, file name could be:
 - server.js
 - app.js
 - index.js
@@ -65,7 +77,7 @@ echo > server.js
 ```
 New-Item -Path . -Name "server.js" -ItemType "file"
 ```
-- File Explorer: Alternatively, you can manually create the file through the graphical interface of Windows.
+- File Explorer: Manually create the file through the graphical interface of Windows or the Explorer panel of VScode (any code editor).
 
 ### Step#6: Set Up MongoDB
 We need to set up MongoDB to store and manage data
@@ -75,50 +87,25 @@ We need to set up MongoDB to store and manage data
 
 
 ### Step#7: Create the .env File:
-In your project root, create a .env file and add your MongoDB connection string:
-You can copy the connection string:
+In your project root, create a **".env"** file and add your MongoDB connection string:
+You can copy the connection string from MongoDB dashboard (Please refer to my in-class comprehensive PDF files):
 ```
 MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority
 ```
 - Replace <username> with your MongoDB Atlas username.
 - Replace <password> with the corresponding password.
 - Replace <dbname> with the name of your database.
+- cluster0 => is the default name or could be any other custom name
 
-**Load Environment Variables:** Add the following line at the top of your server.js file to load the environment variables from the .env file:
-```js
-require('dotenv').config();
-```
+### Step#8: Start with coding :-)
+Refer to the **server.js** file code and comments
 
-### MongoDB Atlas
-1. Create a Cluster
-  - Go to the MongoDB Atlas website and sign in or create an account.
-  - Create a new cluster if you haven’t already. Follow the prompts to set up your cluster.
-2. Get the Connection String
-- Go to the **Database Access**, create a user with read and write access to your database.
-- Go to the **Network Access**, and add your IP address to the IP Whitelist to allow connections from your machine.
-- In **Clusters**, click Connect and choose "Connect Your Application" to get the connection string.
-
-## Step#3: Run and Test Server
+### Step#9: Run and Test Server
 - Start your Express server again to ensure everything is working:
 ```
 node server.js
 ```
 - Check the terminal for the "Connected to MongoDB" message to confirm that the connection is successful.
-
-
-# Project Files Sequence:
-Please follow the following order when reading the code:
-### File1: dbconnect.js - MongoDB Connection File
-This file is primarily responsible for establishing the connection to the MongoDB database using Mongoose.
-
-### File2: create.js - Simple create without Express
-
-### File3: index.js - MongoDB Connection with Full Express Template
-This file is primarily responsible for establishing the connection to the MongoDB database using Mongoose.
-
-- Adding the Express Template contents
-- Adding the Environment Variable file with the required code for .env and in the server file
-- Adding the initial code for "mongoose" besides Express template and .ENV variable as shown below:
 
 **NOTES:**
 
@@ -127,7 +114,7 @@ This file is primarily responsible for establishing the connection to the MongoD
 npm install mongoose dotenv express
 ```
 
-- we should also install ["nodemon"](https://www.npmjs.com/package/nodemon) as a development dependency:
+- According to what we covered before, we should also install ["nodemon"](https://www.npmjs.com/package/nodemon) as a development dependency (check our in-class code examples or my Express repos):
 ```
 npm install --save-dev nodemon
 ```
@@ -135,13 +122,40 @@ npm install --save-dev nodemon
 Then modify the "script" option in the package.json file:
 ```
 "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon server.js"
 }
 ```
 
+Or by convention, we should use "start":
+```
+"scripts": {
+    "start": "nodemon server.js"
+}
+```
+
+For running:
+> npm start server
+OR (if you already specified the file name):
+> npm start
+
 **We can now proceed with CRUD operations**
 
-# Our Atlas MongoDB:
+# Project Files Sequence:
+Please follow the following order when reading the code:
+### File1: dbconnect.js - MongoDB Connection File
+This file is primarily responsible for establishing the connection to the MongoDB database using Mongoose.
+
+### File2: create.js - Simple create without Express
+For creating/adding a new document to a mongodb collection
+
+### File3: server.js - MongoDB Connection with Full Express Template
+This file is primarily responsible for establishing the connection to the MongoDB database using Node, Express, and Mongoose.
+
+- Adding the Express Template contents
+- Adding the Environment Variable file with the required code for .env and in the server file
+- Adding the initial code for "mongoose" besides Express template and .ENV variable as shown below:
+
+# Our Atlas MongoDB Information:
 - database: abc-college
 - collection: "employees"
 - one document sample:
@@ -153,7 +167,7 @@ Then modify the "script" option in the package.json file:
   "email": "alex@college.com",
   "position": "Instructor",
   "age": 58,
-  "date_hired": "2024-07-03"
+  "date_hired": "2023-07-03"
 }
 ```
 

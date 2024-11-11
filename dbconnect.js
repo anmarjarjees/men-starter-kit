@@ -79,26 +79,33 @@ the error is thrown and can be caught using .catch() when you call the async fun
 async function main() {
     try {
         /*
-mongoose: Use mongoose to connect to MongoDB using the connection string
-mongoose.connect() connects the app to the MongoDB database using the provided URI (mongoURI)
-
-    mongoose.connect() is used to connect to the MongoDB database. 
-    It takes a connection string (process.env.MONGO_URI) [Required Argument], 
-    which is stored in a .env file for security.
-
-    Notice that:
-    > it either successfully connects and logs the message "Connected to MongoDB Atlas"
-    > or it catches errors with .catch()
-
-    Link: https://mongoosejs.com/docs/5.x/docs/connections.html
-    Link: https://mongoosejs.com/docs/index.html
-*/
+        mongoose: Use mongoose to connect to MongoDB using the connection string
+        mongoose.connect() connects the app to the MongoDB database using the provided URI (mongoURI)
+        
+            mongoose.connect() is used to connect to the MongoDB database. 
+            It takes a connection string (process.env.MONGO_URI) [Required Argument], 
+            which is stored in a .env file for security.
+        
+            Notice that:
+            > it either successfully connects and logs the message "Connected to MongoDB Atlas"
+            > or it catches errors with .catch()
+        
+            Link: https://mongoosejs.com/docs/5.x/docs/connections.html
+            Link: https://mongoosejs.com/docs/index.html
+        */
         await mongoose.connect(mongoURI, {
             // Use the latest MongoDB connection settings to avoid deprecation warnings
             // Ensures that the URL string parser uses the latest MongoDB version
             useNewUrlParser: true,
             // Avoids deprecation warnings related to MongoDB driver
             useUnifiedTopology: true,
+            /* 
+            IMPORTANT NOTE:
+            ***************
+            Since Mongoose 6.x, both "useNewUrlParser" and "useUnifiedTopology" are enabled by default. 
+            Unless we're using an older version of Mongoose, 
+            we don't need to explicitly set them.
+            */
         });
         console.log('Connected to MongoDB Atlas');
     } catch (err) {
